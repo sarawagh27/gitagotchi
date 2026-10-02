@@ -7,7 +7,7 @@
     <a href="https://github.com/sarawagh27/gitagotchi/releases"><img src="https://img.shields.io/github/v/release/sarawagh27/gitagotchi?color=7c3aed&label=Release&logo=github" alt="Latest Release"></a>
     <a href="https://github.com/sarawagh27/gitagotchi/actions/workflows/gitagotchi.yml"><img src="https://github.com/sarawagh27/gitagotchi/actions/workflows/gitagotchi.yml/badge.svg" alt="Gitagotchi Status"></a>
     <a href="https://github.com/sarawagh27/gitagotchi/actions/workflows/ci.yml"><img src="https://github.com/sarawagh27/gitagotchi/actions/workflows/ci.yml/badge.svg" alt="CI Status"></a>
-    <a href="https://vitest.dev"><img src="https://img.shields.io/badge/Tests-57%20Passed-10b981?logo=vitest&logoColor=white" alt="Vitest Tests"></a>
+    <a href="https://vitest.dev"><img src="https://img.shields.io/badge/Tests-59%20Passed-10b981?logo=vitest&logoColor=white" alt="Vitest Tests"></a>
     <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.x-3178C6?logo=typescript&logoColor=white" alt="TypeScript"></a>
     <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   </p>
@@ -48,12 +48,34 @@ In your repository:
 
 ### 3. Embed in Your Profile README
 
-Drop this one-liner into your profile `README.md` (`sarawagh27/sarawagh27`):
+Choose the embed style that matches your profile:
+
+#### Option A: Mini Companion Sticker _(Recommended for Profiles — Compact & Clean)_
 
 ```markdown
 <p align="center">
   <a href="https://github.com/sarawagh27/gitagotchi">
-    <img src="https://raw.githubusercontent.com/sarawagh27/gitagotchi/main/assets/pet.svg" alt="My Gitagotchi" width="540">
+    <img src="https://raw.githubusercontent.com/sarawagh27/gitagotchi/main/assets/pet-mini.svg" alt="Gitagotchi" width="130">
+  </a>
+</p>
+```
+
+#### Option B: Pure Pet Sprite _(100% Transparent — Zero UI Chrome)_
+
+```markdown
+<p align="center">
+  <a href="https://github.com/sarawagh27/gitagotchi">
+    <img src="https://raw.githubusercontent.com/sarawagh27/gitagotchi/main/assets/pet-sprite.svg" alt="Gitagotchi" width="105">
+  </a>
+</p>
+```
+
+#### Option C: Full RPG Telemetry Dashboard _(Detailed Stats & Meters)_
+
+```markdown
+<p align="center">
+  <a href="https://github.com/sarawagh27/gitagotchi">
+    <img src="https://raw.githubusercontent.com/sarawagh27/gitagotchi/main/assets/pet.svg" alt="Gitagotchi Dashboard" width="540">
   </a>
 </p>
 ```

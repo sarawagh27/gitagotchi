@@ -41,7 +41,7 @@ jobs:
         run: |
           git config user.name "gitagotchi[bot]"
           git config user.email "gitagotchi[bot]@users.noreply.github.com"
-          git add data/pet.json assets/pet.svg
+          git add data/pet.json assets/pet.svg assets/pet-mini.svg assets/pet-sprite.svg
           if git diff --cached --quiet; then
             echo "Nothing changed, no commit."
             exit 0
