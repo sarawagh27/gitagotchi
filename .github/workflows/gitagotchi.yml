@@ -1,0 +1,50 @@
+name: Gitagotchi
+
+on:
+  schedule:
+    - cron: '17 */3 * * *' # every 3 hours
+  workflow_dispatch:
+
+# Only the permission needed to commit the pet back to the repo.
+permissions:
+  contents: write
+
+# Never run two updates at once.
+concurrency:
+  group: gitagotchi
+  cancel-in-progress: false
+
+jobs:
+  tick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Update the pet
+        run: npm run tick
+        env:
+          GITHUB_USERNAME: ${{ github.repository_owner }}
+          # Optional: add a GITAGOTCHI_TOKEN secret to use your own token instead.
+          GITHUB_TOKEN: ${{ secrets.GITAGOTCHI_TOKEN || github.token }}
+          PET_NAME: ${{ vars.PET_NAME }}
+          PET_TIMEZONE: ${{ vars.PET_TIMEZONE }}
+
+      - name: Commit changes
+        run: |
+          git config user.name "gitagotchi[bot]"
+          git config user.email "gitagotchi[bot]@users.noreply.github.com"
+          git add data/pet.json assets/pet.svg
+          if git diff --cached --quiet; then
+            echo "Nothing changed, no commit."
+            exit 0
+          fi
+          git commit -m "chore(pet): update pet"
+          git push

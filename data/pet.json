@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "name": "Nova",
+  "species": "blob",
+  "xp": 0,
+  "level": 1,
+  "stats": {
+    "health": 60,
+    "energy": 60,
+    "hunger": 40,
+    "happiness": 60
+  },
+  "streak": 0,
+  "longestStreak": 0,
+  "totals": {
+    "commits": 0,
+    "prsOpened": 0,
+    "prsMerged": 0,
+    "issuesOpened": 0,
+    "issuesClosed": 0,
+    "reposCreated": 0,
+    "nightCommits": 0
+  },
+  "achievements": [],
+  "lastTickDay": "2026-10-02",
+  "dailyLog": {},
+  "seenEventIds": []
+}
