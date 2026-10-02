@@ -191,3 +191,58 @@ ${cells}
 </svg>
 `;
 }
+
+/**
+ * Renders just the pet sprite as an animated, transparent SVG without any dashboard cards or status bars.
+ * Perfect for minimal profile README embeds.
+ */
+export function renderPetSpriteSvg(state: PetState): string {
+  const stage = stageForLevel(state.level);
+  const mood = moodOf(state.stats);
+  const sprite = pixelRects(buildSprite(stage.id, mood), 10);
+  const summary = `${state.name}, level ${state.level} ${stage.title}`;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="160" height="175" viewBox="0 0 160 175" role="img" aria-label="${escapeXml(summary)}">
+<title>${escapeXml(summary)}</title>
+<style>
+.bob{animation:bob 1.1s steps(1) infinite alternate}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+@media (prefers-reduced-motion:reduce){.bob{animation:none}}
+</style>
+<ellipse cx="80" cy="162" rx="48" ry="6" fill="#000" opacity="0.35"/>
+<g shape-rendering="crispEdges"><g class="bob">${sprite}</g></g>
+</svg>
+`;
+}
+
+/**
+ * Renders a compact companion sticker with the animated pet and a minimal level pill below.
+ */
+export function renderPetMiniSvg(state: PetState): string {
+  const stage = stageForLevel(state.level);
+  const mood = moodOf(state.stats);
+  const accent = ACCENTS[stage.id];
+  const sprite = pixelRects(buildSprite(stage.id, mood), 10);
+  const summary = `${state.name}, level ${state.level} ${stage.title}`;
+  const pillText = `LV ${pad(state.level)} · ${stage.title.toUpperCase()}`;
+  const pillW = pillText.length * 7.2 + 20;
+
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="180" height="210" viewBox="0 0 180 210" role="img" aria-label="${escapeXml(summary)}" font-family="${FONT}">
+<title>${escapeXml(summary)}</title>
+<defs>
+<radialGradient id="mini-glow"><stop offset="0" stop-color="${accent}" stop-opacity="0.28"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></radialGradient>
+</defs>
+<style>
+.bob{animation:bob 1.1s steps(1) infinite alternate}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-5px)}}
+@media (prefers-reduced-motion:reduce){.bob{animation:none}}
+</style>
+<circle cx="90" cy="85" r="70" fill="url(#mini-glow)"/>
+<ellipse cx="90" cy="160" rx="46" ry="6" fill="#000" opacity="0.35"/>
+<g transform="translate(10 0)" shape-rendering="crispEdges"><g class="bob">${sprite}</g></g>
+<rect x="${90 - pillW / 2}" y="174" width="${pillW}" height="24" rx="12" fill="${accent}" fill-opacity="0.14" stroke="${accent}" stroke-opacity="0.5"/>
+<text x="90" y="190" font-size="11" font-weight="700" letter-spacing="1" fill="${accent}" text-anchor="middle">${escapeXml(pillText)}</text>
+</svg>
+`;
+}
+

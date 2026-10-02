@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { STAGES, xpForLevel, type Mood } from '../src/pet/mechanics.js';
-import { escapeXml, renderEvolutionStrip, renderPetSvg } from '../src/svg/renderer.js';
+import {
+  escapeXml,
+  renderEvolutionStrip,
+  renderPetSvg,
+  renderPetMiniSvg,
+  renderPetSpriteSvg,
+} from '../src/svg/renderer.js';
 import { buildSprite, GRID } from '../src/svg/sprites.js';
 import { newPet } from './helpers.js';
 
@@ -56,5 +62,22 @@ describe('renderPetSvg', () => {
 
   it('renders the evolution strip', () => {
     expect(renderEvolutionStrip()).toContain('GITHUB LEGEND');
+  });
+
+  it('renders pure sprite SVG without dashboard chrome', () => {
+    const state = { ...newPet(), name: 'Nova', level: 1 };
+    const svg = renderPetSpriteSvg(state);
+    expect(svg.startsWith('<svg')).toBe(true);
+    expect(svg).toContain('width="160"');
+    expect(svg).not.toContain('HEALTH');
+    expect(svg).not.toContain('XP');
+  });
+
+  it('renders mini companion SVG with level badge', () => {
+    const state = { ...newPet(), name: 'Nova', level: 2 };
+    const svg = renderPetMiniSvg(state);
+    expect(svg.startsWith('<svg')).toBe(true);
+    expect(svg).toContain('LV 02');
+    expect(svg).not.toContain('HEALTH');
   });
 });

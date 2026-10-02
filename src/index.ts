@@ -7,7 +7,7 @@ import { GitHubClient } from './github/client.js';
 import { createPet, serializePetState } from './pet/pet.js';
 import { chooseMessage } from './pet/personality.js';
 import { readState, writeIfChanged } from './storage.js';
-import { renderPetSvg } from './svg/renderer.js';
+import { renderPetSvg, renderPetMiniSvg, renderPetSpriteSvg } from './svg/renderer.js';
 import { dayKey } from './dates.js';
 
 const inActions = process.env.GITHUB_ACTIONS === 'true';
@@ -28,6 +28,8 @@ async function runDemo(): Promise<void> {
     owner: 'you',
   });
   await writeIfChanged('out/demo.svg', svg);
+  await writeIfChanged('out/demo-mini.svg', renderPetMiniSvg(state));
+  await writeIfChanged('out/demo-sprite.svg', renderPetSpriteSvg(state));
   console.log(
     `Demo pet: level ${state.level}, ${state.xp} XP, ${state.streak}-day streak.\n` +
       'Wrote out/demo.svg. Set GITHUB_USERNAME and run `npm run tick` to hatch your own.',
@@ -61,12 +63,18 @@ async function runTick(config: Config, dryRun: boolean): Promise<void> {
     message: chooseMessage(state, today),
     owner: config.username,
   });
+  const miniSvg = renderPetMiniSvg(state);
+  const spriteSvg = renderPetSpriteSvg(state);
 
   if (dryRun) {
     console.log('Dry run: not writing files.');
   } else {
+    const miniPath = config.svgPath.replace(/\.svg$/, '-mini.svg');
+    const spritePath = config.svgPath.replace(/\.svg$/, '-sprite.svg');
     const stateChanged = await writeIfChanged(config.statePath, serializePetState(state));
     const svgChanged = await writeIfChanged(config.svgPath, svg);
+    await writeIfChanged(miniPath, miniSvg);
+    await writeIfChanged(spritePath, spriteSvg);
     console.log(stateChanged || svgChanged ? 'Pet updated.' : 'Nothing changed.');
   }
 
