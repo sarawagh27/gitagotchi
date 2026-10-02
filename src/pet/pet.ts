@@ -1,5 +1,4 @@
-import { levelForXp } from './levels.js';
-import { initialStats } from './stats.js';
+import { initialStats, levelForXp } from './mechanics.js';
 import { StateError } from '../errors.js';
 import {
   ACHIEVEMENT_IDS,

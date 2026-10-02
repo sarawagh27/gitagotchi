@@ -1,7 +1,7 @@
-import { simulate } from './engine/simulation.js';
+import { simulate } from './simulation.js';
 import { createPet } from './pet/pet.js';
 import type { ActivityEvent, PetState } from './pet/types.js';
-import { dayKey } from './util/dates.js';
+import { dayKey } from './dates.js';
 
 const DAY_MS = 86_400_000;
 const HOUR_MS = 3_600_000;

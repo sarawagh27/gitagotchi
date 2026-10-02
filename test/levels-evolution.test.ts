@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { nextStage, stageForLevel } from '../src/pet/evolution.js';
-import { MAX_LEVEL, levelForXp, levelProgress, xpForLevel } from '../src/pet/levels.js';
+import {
+  MAX_LEVEL,
+  levelForXp,
+  levelProgress,
+  nextStage,
+  stageForLevel,
+  xpForLevel,
+} from '../src/pet/mechanics.js';
 
 describe('levels', () => {
   it('starts at level 1 with no XP', () => {

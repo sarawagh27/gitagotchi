@@ -1,16 +1,18 @@
-import { findNewAchievements, type AchievementDef } from '../achievements/achievements.js';
-import { levelForXp } from '../pet/levels.js';
-import { applyDailyDecay, feedPet } from '../pet/stats.js';
-import { currentStreak, streakAt } from '../pet/streak.js';
-import { KIND_TO_FIELD, emptyDay, type ActivityEvent, type PetState } from '../pet/types.js';
+import { findNewAchievements, type AchievementDef } from './achievements.js';
+import { addDays, dayKey, daysBetween, hourOf } from './dates.js';
 import {
   ACHIEVEMENT_XP,
   STREAK_XP,
   activityXp,
+  applyDailyDecay,
+  currentStreak,
+  feedPet,
   isActiveDay,
+  levelForXp,
+  streakAt,
   streakMilestoneBonus,
-} from '../pet/xp.js';
-import { addDays, dayKey, daysBetween, hourOf } from '../util/dates.js';
+} from './pet/mechanics.js';
+import { KIND_TO_FIELD, emptyDay, type ActivityEvent, type PetState } from './pet/types.js';
 
 const MAX_DECAY_DAYS = 60;
 const MAX_LOG_DAYS = 400;

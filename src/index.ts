@@ -1,6 +1,6 @@
 import { loadConfig, type Config } from './config.js';
 import { demoPet } from './demo.js';
-import { simulate, markEventsSeen } from './engine/simulation.js';
+import { simulate, markEventsSeen } from './simulation.js';
 import { GitagotchiError, RateLimitError, redactSecrets } from './errors.js';
 import { fetchUserEvents, toActivityEvents } from './github/activity.js';
 import { GitHubClient } from './github/client.js';
@@ -8,7 +8,7 @@ import { createPet, serializePetState } from './pet/pet.js';
 import { chooseMessage } from './pet/personality.js';
 import { readState, writeIfChanged } from './storage.js';
 import { renderPetSvg } from './svg/renderer.js';
-import { dayKey } from './util/dates.js';
+import { dayKey } from './dates.js';
 
 const inActions = process.env.GITHUB_ACTIONS === 'true';
 

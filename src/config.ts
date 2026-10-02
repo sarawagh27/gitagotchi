@@ -1,5 +1,5 @@
 import { ConfigError } from './errors.js';
-import { isValidTimeZone } from './util/dates.js';
+import { isValidTimeZone } from './dates.js';
 
 export interface Config {
   username: string;

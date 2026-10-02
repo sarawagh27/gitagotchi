@@ -5,7 +5,7 @@ import {
   isActiveDay,
   streakMilestoneBonus,
   XP_RULES,
-} from '../src/pet/xp.js';
+} from '../src/pet/mechanics.js';
 import { emptyDay } from '../src/pet/types.js';
 
 describe('xp rules', () => {

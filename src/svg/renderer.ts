@@ -1,7 +1,12 @@
-import { findAchievement } from '../achievements/achievements.js';
-import { STAGES, stageForLevel, type StageId } from '../pet/evolution.js';
-import { levelProgress } from '../pet/levels.js';
-import { moodOf, type Mood } from '../pet/stats.js';
+import { findAchievement } from '../achievements.js';
+import {
+  levelProgress,
+  moodOf,
+  STAGES,
+  stageForLevel,
+  type Mood,
+  type StageId,
+} from '../pet/mechanics.js';
 import type { PetState } from '../pet/types.js';
 import { buildSprite, type Pixel } from './sprites.js';
 

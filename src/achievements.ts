@@ -1,6 +1,6 @@
-import { addDays, weekdayOf } from '../util/dates.js';
-import { isActiveDay } from '../pet/xp.js';
-import type { AchievementId, PetState } from '../pet/types.js';
+import { addDays, weekdayOf } from './dates.js';
+import { isActiveDay } from './pet/mechanics.js';
+import type { AchievementId, PetState } from './pet/types.js';
 
 export interface AchievementDef {
   id: AchievementId;

@@ -1,5 +1,4 @@
-import type { StageId } from '../pet/evolution.js';
-import type { Mood } from '../pet/stats.js';
+import type { Mood, StageId } from '../pet/mechanics.js';
 
 export const GRID = 16;
 

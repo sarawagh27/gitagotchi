@@ -1,6 +1,5 @@
-import { isActiveDay } from './xp.js';
-import { daysSinceActive } from './streak.js';
-import { addDays } from '../util/dates.js';
+import { addDays } from '../dates.js';
+import { daysSinceActive, isActiveDay } from './mechanics.js';
 import type { PetState } from './types.js';
 
 function hash(text: string): number {

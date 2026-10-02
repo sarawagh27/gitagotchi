@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { STAGES } from '../src/pet/evolution.js';
-import { xpForLevel } from '../src/pet/levels.js';
+import { STAGES, xpForLevel, type Mood } from '../src/pet/mechanics.js';
 import { escapeXml, renderEvolutionStrip, renderPetSvg } from '../src/svg/renderer.js';
 import { buildSprite, GRID } from '../src/svg/sprites.js';
-import type { Mood } from '../src/pet/stats.js';
 import { newPet } from './helpers.js';
 
 const MOODS: Mood[] = ['happy', 'content', 'hungry', 'sleepy', 'sad', 'weak'];

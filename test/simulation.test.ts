@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { markEventsSeen, simulate } from '../src/engine/simulation.js';
+import { markEventsSeen, simulate } from '../src/simulation.js';
 import { createPet, parsePetState, serializePetState } from '../src/pet/pet.js';
 import { chooseMessage } from '../src/pet/personality.js';
 import { StateError } from '../src/errors.js';

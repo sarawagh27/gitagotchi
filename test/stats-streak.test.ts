@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest';
-import { applyDailyDecay, feedPet, initialStats, moodOf } from '../src/pet/stats.js';
-import { currentStreak, daysSinceActive, streakAt } from '../src/pet/streak.js';
+import {
+  applyDailyDecay,
+  currentStreak,
+  daysSinceActive,
+  feedPet,
+  initialStats,
+  moodOf,
+  streakAt,
+} from '../src/pet/mechanics.js';
 import { emptyDay, type DayRecord } from '../src/pet/types.js';
 
 const active = (): DayRecord => ({ ...emptyDay(), commits: 1 });
