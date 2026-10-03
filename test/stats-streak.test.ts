@@ -21,35 +21,37 @@ describe('stats', () => {
     expect(Object.values(s).every((v) => v >= 0 && v <= 100)).toBe(true);
   });
 
-  it('feeding lowers hunger and raises energy and happiness', () => {
+  it('activity boosts momentum, sync, focus, and vitality', () => {
     const before = initialStats();
-    const after = feedPet(before, 100);
-    expect(after.hunger).toBeLessThan(before.hunger);
-    expect(after.energy).toBeGreaterThan(before.energy);
-    expect(after.happiness).toBeGreaterThan(before.happiness);
+    const after = feedPet(before, 100, 5);
+    expect(after.momentum).toBeGreaterThan(before.momentum);
+    expect(after.sync).toBeGreaterThan(before.sync);
+    expect(after.focus).toBeGreaterThan(before.focus);
+    expect(after.vitality).toBeGreaterThan(before.vitality);
   });
 
-  it('inactive days hurt more than active days', () => {
+  it('inactive days decay rhythm more than active days', () => {
     const s = initialStats();
     const afterActive = applyDailyDecay(s, true);
     const afterIdle = applyDailyDecay(s, false);
-    expect(afterIdle.hunger).toBeGreaterThan(afterActive.hunger);
-    expect(afterIdle.happiness).toBeLessThan(afterActive.happiness);
-    expect(afterIdle.health).toBeLessThan(afterActive.health);
+    expect(afterIdle.momentum).toBeLessThan(afterActive.momentum);
+    expect(afterIdle.sync).toBeLessThan(afterActive.sync);
+    expect(afterIdle.vitality).toBeLessThan(afterActive.vitality);
   });
 
-  it('a long absence starves the pet', () => {
+  it('a long absence drops momentum and vitality to resting/weak', () => {
     let s = initialStats();
-    for (let i = 0; i < 10; i++) s = applyDailyDecay(s, false);
-    expect(s.hunger).toBe(100);
+    for (let i = 0; i < 15; i++) s = applyDailyDecay(s, false);
+    expect(s.momentum).toBe(0);
     expect(moodOf(s)).toBe('weak');
   });
 
-  it('derives mood from stats', () => {
-    expect(moodOf({ health: 90, energy: 90, hunger: 10, happiness: 90 })).toBe('happy');
-    expect(moodOf({ health: 50, energy: 50, hunger: 80, happiness: 50 })).toBe('hungry');
-    expect(moodOf({ health: 50, energy: 10, hunger: 40, happiness: 50 })).toBe('sleepy');
-    expect(moodOf({ health: 50, energy: 50, hunger: 40, happiness: 20 })).toBe('sad');
+  it('derives mood from rhythm vitals', () => {
+    expect(moodOf({ vitality: 90, momentum: 90, sync: 90, focus: 90 })).toBe('happy');
+    expect(moodOf({ vitality: 50, momentum: 30, sync: 50, focus: 50 })).toBe('hungry');
+    expect(moodOf({ vitality: 50, momentum: 20, sync: 40, focus: 20 })).toBe('sleepy');
+    expect(moodOf({ vitality: 50, momentum: 60, sync: 20, focus: 50 })).toBe('sad');
+    expect(moodOf({ vitality: 15, momentum: 10, sync: 10, focus: 10 })).toBe('weak');
   });
 });
 

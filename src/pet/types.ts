@@ -42,13 +42,17 @@ export interface Totals extends Counts {
   nightCommits: number;
 }
 
+export type BranchArchetype = 'builder' | 'shipwright' | 'hunter';
+
 export interface Stats {
-  /** 0-100, derived from the other three. */
-  health: number;
-  energy: number;
-  /** 0 = full, 100 = starving. */
-  hunger: number;
-  happiness: number;
+  /** 0-100, composite condition derived from momentum, sync, and focus. */
+  vitality: number;
+  /** 0-100, commit and build velocity. */
+  momentum: number;
+  /** 0-100, PR, review, and issue collaboration rhythm. */
+  sync: number;
+  /** 0-100, streak consistency and flow state. */
+  focus: number;
 }
 
 export const ACHIEVEMENT_IDS = [
@@ -77,6 +81,7 @@ export interface PetState {
   version: typeof STATE_VERSION;
   name: string;
   species: string;
+  branch: BranchArchetype;
   xp: number;
   level: number;
   stats: Stats;

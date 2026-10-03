@@ -6,6 +6,7 @@ import {
   activityXp,
   applyDailyDecay,
   currentStreak,
+  determineBranch,
   feedPet,
   isActiveDay,
   levelForXp,
@@ -122,6 +123,7 @@ export function simulate(
 
   state.xp += xpGained;
   state.level = levelForXp(state.xp);
+  state.branch = determineBranch(state.totals);
   prune(state, today);
 
   return {

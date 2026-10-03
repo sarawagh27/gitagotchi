@@ -6,16 +6,22 @@ import {
   STATE_VERSION,
   emptyTotals,
   type AchievementId,
+  type BranchArchetype,
   type DayRecord,
   type PetState,
   type Totals,
 } from './types.js';
 
-export function createPet(name: string, today: string): PetState {
+export function createPet(
+  name: string,
+  today: string,
+  branch: BranchArchetype = 'builder',
+): PetState {
   return {
     version: STATE_VERSION,
     name,
     species: 'blob',
+    branch,
     xp: 0,
     level: 1,
     stats: initialStats(),
@@ -100,17 +106,30 @@ export function parsePetState(input: unknown): PetState {
       unlockedOn: asDay(a.unlockedOn, `achievements[${i}].unlockedOn`),
     }));
 
+  const rawBranch = raw.branch;
+  const branch: BranchArchetype =
+    rawBranch === 'builder' || rawBranch === 'shipwright' || rawBranch === 'hunter'
+      ? rawBranch
+      : 'builder';
+
+  const vitalityVal = stats.vitality ?? stats.health ?? 60;
+  const momentumVal =
+    stats.momentum ?? (stats.hunger !== undefined ? 100 - Number(stats.hunger) : 50);
+  const syncVal = stats.sync ?? stats.happiness ?? 50;
+  const focusVal = stats.focus ?? stats.energy ?? 50;
+
   return {
     version: STATE_VERSION,
     name: asString(raw.name, 'name'),
     species: asString(raw.species ?? 'blob', 'species'),
+    branch,
     xp,
     level: levelForXp(xp),
     stats: {
-      health: asNumber(stats.health, 'stats.health', 0, 100),
-      energy: asNumber(stats.energy, 'stats.energy', 0, 100),
-      hunger: asNumber(stats.hunger, 'stats.hunger', 0, 100),
-      happiness: asNumber(stats.happiness, 'stats.happiness', 0, 100),
+      vitality: asNumber(vitalityVal, 'stats.vitality', 0, 100),
+      momentum: asNumber(momentumVal, 'stats.momentum', 0, 100),
+      sync: asNumber(syncVal, 'stats.sync', 0, 100),
+      focus: asNumber(focusVal, 'stats.focus', 0, 100),
     },
     streak: asNumber(raw.streak, 'streak'),
     longestStreak: asNumber(raw.longestStreak, 'longestStreak'),

@@ -25,12 +25,15 @@
 
 ### ⚡ What is Gitagotchi?
 
-Gitagotchi is a zero-maintenance virtual pet that lives directly inside your GitHub repository.
+Gitagotchi is a small, zero-maintenance companion that lives directly inside your GitHub repository.
 
-- **Commits, PRs, and Issues** feed and energize your pet.
-- **Go inactive** and it gets hungry and tired—code again to nurse it back to full health.
-- **Never dies**: Neglect makes it sleepy and hungry, but it will always wait for your next commit.
-- **Zero infrastructure**: 100% pure TypeScript + GitHub Actions. No servers, no databases, no external APIs.
+Every few hours, a GitHub Action checks your public activity, updates your pet's state in `data/pet.json`, and renders fresh SVGs straight into your repo for your profile README.
+
+- **Reflects how you actually work**: At level 5, your pet branches into an archetype based on your actual Git habits—shipping PRs, squashing bugs late at night, or building out commits.
+- **Real Git telemetry over productivity scores**: No fake hunger mechanics, productivity guilt, or arbitrary scores. It displays real numbers: commits, PRs, issues, streaks, and an authentic 7-day commit track.
+- **7-day commit branch**: An SVG commit track with weekday markers (`S M T W T F S`) reflecting your actual commits over the past week.
+- **Never dies**: If you take time off, your pet rests peacefully. It never starves or guilt-trips you when you return.
+- **Zero server footprint**: 100% TypeScript + GitHub Actions. No servers, no database, no accounts, no auth.
 
 ---
 
@@ -50,7 +53,7 @@ In your repository:
 
 Choose the embed style that matches your profile:
 
-#### Option A: Mini Companion Sticker _(Recommended for Profiles — Compact & Clean)_
+#### Option A: Mini Companion Sticker _(Compact & clean for profiles)_
 
 ```markdown
 <p align="center">
@@ -60,7 +63,7 @@ Choose the embed style that matches your profile:
 </p>
 ```
 
-#### Option B: Pure Pet Sprite _(100% Transparent — Zero UI Chrome)_
+#### Option B: Pure Pet Sprite _(100% transparent pixel sprite)_
 
 ```markdown
 <p align="center">
@@ -70,12 +73,12 @@ Choose the embed style that matches your profile:
 </p>
 ```
 
-#### Option C: Full RPG Telemetry Dashboard _(Detailed Stats & Meters)_
+#### Option C: Full Activity Card _(Pet sprite, 7-day commit track, and Git telemetry)_
 
 ```markdown
 <p align="center">
   <a href="https://github.com/sarawagh27/gitagotchi">
-    <img src="https://raw.githubusercontent.com/sarawagh27/gitagotchi/main/assets/pet.svg" alt="Gitagotchi Dashboard" width="540">
+    <img src="https://raw.githubusercontent.com/sarawagh27/gitagotchi/main/assets/pet.svg" alt="Gitagotchi Card" width="540">
   </a>
 </p>
 ```
@@ -84,48 +87,47 @@ _(Optional variables under **Settings → Secrets and variables → Actions → 
 
 ---
 
-## 🧬 Evolution Stages
+## 🌿 Evolutionary Branches
 
-Your pet gains XP from daily coding activity and evolves through 6 distinct pixel-art forms:
+Your pet branches deterministically based on your actual Git activity when reaching Level 5:
 
 <p align="center">
-  <img src="docs/evolution.svg" alt="Evolution Stages" width="740">
+  <img src="docs/evolution.svg" alt="Evolution Branches" width="880">
 </p>
 
-| Stage | Level  | XP Required | Form              |
-| :---: | :----: | :---------: | :---------------- |
-|  🥚   | **1**  |   `0 XP`    | **Egg**           |
-|  🐣   | **2**  |   `50 XP`   | **Hatchling**     |
-|  💻   | **5**  |  `500 XP`   | **Developer**     |
-|  👾   | **10** | `2,250 XP`  | **Code Beast**    |
-|  🐉   | **20** | `9,500 XP`  | **Git Monster**   |
-|  👑   | **50** | `61,250 XP` | **GitHub Legend** |
+| Branch                   | Stage (Lv 1–4)     | Specialization (Lv 5–19) | Ascended Form (Lv 20+) | Deterministic Trigger                                       |
+| :----------------------- | :----------------- | :----------------------- | :--------------------- | :---------------------------------------------------------- |
+| **`feature/builder`**    | 🥚 Egg → 🌱 Sprout | 🔨 **Code Builder**      | 🏛️ **Grand Architect** | Default branch: Steady commits & continuous building        |
+| **`feature/shipwright`** | 🥚 Egg → 🌱 Sprout | ⚓ **Shipwright**        | 👑 **Fleet Admiral**   | PR-driven: ≥ 25% PR activity (opens & merges)               |
+| **`feature/hunter`**     | 🥚 Egg → 🌱 Sprout | 🦉 **Night Owl**         | 🌌 **Void Walker**     | Bug & night-driven: ≥ 25% closed issues or midnight commits |
 
 $$\text{Level } n \text{ requires } 25 \times (n - 1) \times n \text{ total XP}$$
 
 ---
 
-## 📊 Stats & XP Engine
+## 📊 Real Git Telemetry
 
-### XP Values (Anti-Abuse Daily Caps)
+Rather than scoring your productivity or treating commits like food pellets, Gitagotchi surfaces real GitHub activity directly on the card:
 
-| Action                  |        XP        | Daily Cap                                        |
-| :---------------------- | :--------------: | :----------------------------------------------- |
-| **Commit**              |      `+10`       | 10 commits / day _(100 XP max)_                  |
-| **Pull Request Opened** |      `+25`       | 4 PRs / day _(100 XP max)_                       |
-| **Pull Request Merged** |      `+50`       | 4 merges / day _(200 XP max)_                    |
-| **Issue Opened**        |       `+5`       | 5 issues / day _(25 XP max)_                     |
-| **Issue Closed**        |      `+20`       | 3 issues / day _(60 XP max)_                     |
-| **Repo Created**        |      `+75`       | 2 repos / day _(150 XP max)_                     |
-| **Daily Streak**        |      `+10`       | Daily streak bonus (2+ consecutive active days)  |
-| **Streak Milestones**   | `+50` to `+1000` | Big milestone bursts at 7, 30, 100, and 365 days |
+- 🔨 **Commits**: Total all-time commits and your past 7 days volume.
+- 🔀 **Pull Requests**: Total PRs opened and total PRs merged.
+- 🐛 **Issues**: Total issues opened and closed.
+- 🔥 **Streak**: Current consecutive active days and your all-time best streak.
 
-### Vitals (0 – 100)
+The pet's mood and speech bubble naturally reflect these events without nagging or productivity guilt.
 
-- 🍖 **Food**: Rises when you push code; slowly drops on inactive days.
-- ⚡ **Energy**: Recharges with consistent coding activity.
-- 💖 **Joy**: Multiplies with streaks and milestone achievements.
-- 🩺 **Health**: Dynamic composite: `0.4 × Food + 0.3 × Energy + 0.3 × Joy`.
+### XP Engine (Anti-Abuse Daily Caps)
+
+| Action                  |        XP        | Daily Cap                                       |
+| :---------------------- | :--------------: | :---------------------------------------------- |
+| **Commit**              |      `+10`       | 10 commits / day _(100 XP max)_                 |
+| **Pull Request Opened** |      `+25`       | 4 PRs / day _(100 XP max)_                      |
+| **Pull Request Merged** |      `+50`       | 4 merges / day _(200 XP max)_                   |
+| **Issue Opened**        |       `+5`       | 5 issues / day _(25 XP max)_                    |
+| **Issue Closed**        |      `+20`       | 3 issues / day _(60 XP max)_                    |
+| **Repo Created**        |      `+75`       | 2 repos / day _(150 XP max)_                    |
+| **Daily Streak**        |      `+10`       | Daily streak bonus (2+ consecutive active days) |
+| **Streak Milestones**   | `+50` to `+1000` | Milestone bursts at 7, 30, 100, and 365 days    |
 
 ---
 

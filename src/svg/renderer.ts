@@ -1,5 +1,7 @@
+import { addDays } from '../dates.js';
 import { findAchievement } from '../achievements.js';
 import {
+  isActiveDay,
   levelProgress,
   moodOf,
   STAGES,
@@ -24,14 +26,14 @@ const FONT =
 
 const ACCENTS: Record<StageId, string> = {
   egg: '#e8dcc0',
-  hatchling: '#5eead4',
-  developer: '#818cf8',
-  code_beast: '#fb7185',
-  git_monster: '#a78bfa',
-  legend: '#fbbf24',
+  sprout: '#5eead4',
+  builder: '#fbbf24',
+  architect: '#60a5fa',
+  shipwright: '#38bdf8',
+  admiral: '#facc15',
+  hunter: '#c084fc',
+  voidwalker: '#818cf8',
 };
-
-const FLAME = ['..O..', '.OO..', '.OOO.', 'OOYOO', 'OYYYO', '.OYO.'];
 
 export function escapeXml(text: string): string {
   return text
@@ -86,23 +88,94 @@ function segmentBar(
   return out;
 }
 
-function flameIcon(x: number, y: number, active: boolean): string {
-  const colors = active ? { O: '#ff7b1c', Y: '#ffd33d' } : { O: '#484f58', Y: '#6e7681' };
-  const pixels: Pixel[] = [];
-  FLAME.forEach((row, py) =>
-    [...row].forEach((ch, px) => {
-      if (ch === 'O' || ch === 'Y') pixels.push({ x: px, y: py, color: colors[ch] });
-    }),
-  );
-  return `<g transform="translate(${x} ${y})">${pixelRects(pixels, 3)}</g>`;
-}
-
 function pad(level: number): string {
   return String(level).padStart(2, '0');
 }
 
+function renderCommitTrack(state: PetState, accent: string): string {
+  const startX = 52;
+  const gap = 21;
+  const y = 196;
+  const endX = startX + 6 * gap;
+  const DAYS_OF_WEEK = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+  let out = `<line x1="${startX}" y1="${y}" x2="${endX}" y2="${y}" stroke="#30363d" stroke-width="2" stroke-linecap="round"/>`;
+  for (let i = 0; i < 7; i++) {
+    const day = addDays(state.lastTickDay, i - 6);
+    const active = isActiveDay(state.dailyLog[day]);
+    const cx = startX + i * gap;
+    const weekday = DAYS_OF_WEEK[new Date(day + 'T12:00:00Z').getUTCDay()];
+    if (active) {
+      out += `<circle cx="${cx}" cy="${y}" r="4" fill="${accent}" stroke="#0d1117" stroke-width="1.5"/>`;
+    } else {
+      out += `<circle cx="${cx}" cy="${y}" r="2.8" fill="#161b22" stroke="#484f58" stroke-width="1.2"/>`;
+    }
+    if (i === 6) {
+      out += `<circle cx="${cx}" cy="${y}" r="6.5" fill="none" stroke="${accent}" stroke-width="1" stroke-dasharray="2 1.5"/>`;
+    }
+    out += `<text x="${cx}" y="${y + 13}" font-size="7.5" font-family="${FONT}" fill="${active ? accent : '#6e7681'}" text-anchor="middle">${weekday}</text>`;
+  }
+  return `<g class="commit-track">${out}</g>`;
+}
+
+function renderTelemetryCards(state: PetState): string {
+  let weekCommits = 0;
+  for (let i = 0; i < 7; i++) {
+    const d = addDays(state.lastTickDay, -i);
+    weekCommits += state.dailyLog[d]?.commits ?? 0;
+  }
+  const totalPRs = state.totals.prsMerged + state.totals.prsOpened;
+  const totalIssues = state.totals.issuesClosed + state.totals.issuesOpened;
+
+  const cards = [
+    {
+      label: 'COMMITS',
+      val: `${state.totals.commits}`,
+      sub: `${weekCommits} this wk`,
+      subColor: '#58a6ff',
+      x: 236,
+      y: 120,
+    },
+    {
+      label: 'PULL REQS',
+      val: `${totalPRs}`,
+      sub: `${state.totals.prsMerged} merged`,
+      subColor: '#38bdf8',
+      x: 382,
+      y: 120,
+    },
+    {
+      label: 'ISSUES',
+      val: `${totalIssues}`,
+      sub: `${state.totals.issuesClosed} closed`,
+      subColor: '#a371f7',
+      x: 236,
+      y: 182,
+    },
+    {
+      label: 'STREAK',
+      val: `${state.streak}d`,
+      sub: `best: ${state.longestStreak}d`,
+      subColor: '#ffa657',
+      x: 382,
+      y: 182,
+    },
+  ];
+
+  return cards
+    .map(
+      (c) =>
+        `<g transform="translate(${c.x} ${c.y})">` +
+        `<rect width="134" height="54" rx="8" fill="#161b22" stroke="#30363d"/>` +
+        `<text x="12" y="17" font-size="9" font-weight="700" letter-spacing="1" fill="#8b949e">${c.label}</text>` +
+        `<text x="12" y="42" font-size="20" font-weight="700" fill="#e6edf3">${c.val}</text>` +
+        `<text x="122" y="42" font-size="9" fill="${c.subColor}" text-anchor="end">${c.sub}</text>` +
+        `</g>`,
+    )
+    .join('');
+}
+
 export function renderPetSvg(state: PetState, options: RenderOptions): string {
-  const stage = stageForLevel(state.level);
+  const stage = stageForLevel(state.level, state.branch);
   const mood = moodOf(state.stats);
   const accent = ACCENTS[stage.id];
   const progress = levelProgress(state.xp);
@@ -110,29 +183,11 @@ export function renderPetSvg(state: PetState, options: RenderOptions): string {
   const latest = state.achievements.at(-1);
   const latestTitle = latest ? findAchievement(latest.id)?.title : undefined;
 
-  const stats = [
-    { label: 'HEALTH', value: state.stats.health, color: '#f85149' },
-    { label: 'ENERGY', value: state.stats.energy, color: '#e3b341' },
-    { label: 'FOOD', value: 100 - state.stats.hunger, color: '#3fb950' },
-    { label: 'JOY', value: state.stats.happiness, color: '#db61a2' },
-  ];
-  const statRows = stats
-    .map((s, i) => {
-      const y = 138 + i * 22;
-      return (
-        `<text x="236" y="${y}" font-size="11" fill="#8b949e">${s.label}</text>` +
-        segmentBar(296, y - 9, s.value / 100, 20, 7, 2, 9, s.color) +
-        `<text x="516" y="${y}" font-size="11" fill="#c9d1d9" text-anchor="end">${s.value}</text>`
-      );
-    })
-    .join('');
-
   const pillText = stage.title.toUpperCase();
-  const pillW = pillText.length * 7.2 + 24;
+  const pillW = pillText.length * 6.8 + 22;
   const xpLabel = progress.maxed
     ? 'MAX LEVEL'
     : `${progress.xpIntoLevel} / ${progress.xpForNext} XP  ·  ${Math.floor(progress.ratio * 100)}%`;
-  const streakText = state.streak > 0 ? `${state.streak} DAY STREAK` : 'NO STREAK YET';
   const name = escapeXml(state.name.toUpperCase());
   const message = escapeXml(options.message);
   const summary = `${state.name}, level ${state.level} ${stage.title}, ${state.streak} day streak`;
@@ -152,36 +207,35 @@ export function renderPetSvg(state: PetState, options: RenderOptions): string {
 <rect x="0.5" y="0.5" width="${WIDTH - 1}" height="${HEIGHT - 1}" rx="16" fill="url(#bg)" stroke="#30363d"/>
 <rect x="0.5" y="0.5" width="${WIDTH - 1}" height="${HEIGHT - 1}" rx="16" fill="url(#dots)"/>
 <text x="24" y="30" font-size="10" letter-spacing="3" fill="#6e7681">GITAGOTCHI</text>
+<text x="122" y="30" font-size="10" letter-spacing="1" fill="${accent}">feature/${escapeXml(state.branch)}</text>
 ${options.owner ? `<text x="516" y="30" font-size="10" fill="#6e7681" text-anchor="end">@${escapeXml(options.owner)}</text>` : ''}
-<circle cx="116" cy="126" r="92" fill="url(#glow)"/>
-<ellipse cx="116" cy="210" rx="58" ry="7" fill="#000" opacity="0.4"/>
-<g transform="translate(36 46)" shape-rendering="crispEdges"><g class="bob">${sprite}</g></g>
-<rect x="${116 - pillW / 2}" y="224" width="${pillW}" height="22" rx="11" fill="${accent}" fill-opacity="0.16" stroke="${accent}" stroke-opacity="0.6"/>
-<text x="116" y="239" font-size="11" font-weight="700" letter-spacing="1" fill="${accent}" text-anchor="middle">${escapeXml(pillText)}</text>
-<text x="236" y="68" font-size="24" font-weight="700" letter-spacing="2" fill="#e6edf3">${name}</text>
+<circle cx="116" cy="114" r="86" fill="url(#glow)"/>
+<g transform="translate(36 30)" shape-rendering="crispEdges"><g class="bob">${sprite}</g></g>
+${renderCommitTrack(state, accent)}
+<rect x="${116 - pillW / 2}" y="222" width="${pillW}" height="20" rx="10" fill="${accent}" fill-opacity="0.14" stroke="${accent}" stroke-opacity="0.5"/>
+<text x="116" y="236" font-size="10" font-weight="700" letter-spacing="1" fill="${accent}" text-anchor="middle">${escapeXml(pillText)}</text>
+<text x="236" y="66" font-size="22" font-weight="700" letter-spacing="1" fill="#e6edf3">${name}</text>
 <rect x="446" y="46" width="70" height="26" rx="6" fill="${accent}" fill-opacity="0.16" stroke="${accent}" stroke-opacity="0.6"/>
 <text x="481" y="64" font-size="13" font-weight="700" fill="${accent}" text-anchor="middle">LV ${pad(state.level)}</text>
-${segmentBar(236, 84, progress.ratio, 28, 8, 2, 10, accent)}
-<text x="236" y="110" font-size="10" fill="#8b949e">${escapeXml(xpLabel)}</text>
-${statRows}
-${flameIcon(236, 226, state.streak > 0)}
-<text x="258" y="241" font-size="12" font-weight="700" fill="${state.streak > 0 ? '#ffa657' : '#6e7681'}">${streakText}</text>
-${latestTitle ? `<text x="516" y="241" font-size="11" fill="#d2a8ff" text-anchor="end">★ ${escapeXml(latestTitle.toUpperCase())}</text>` : ''}
-<rect x="24" y="258" width="492" height="28" rx="8" fill="#161b22" stroke="#30363d"/>
-<text x="270" y="276" font-size="12" font-style="italic" fill="#c9d1d9" text-anchor="middle">“${message}”</text>
+${segmentBar(236, 82, progress.ratio, 28, 8, 2, 8, accent)}
+<text x="236" y="104" font-size="10" fill="#8b949e">${escapeXml(xpLabel)}</text>
+${latestTitle ? `<text x="516" y="104" font-size="10" fill="#d2a8ff" text-anchor="end">★ ${escapeXml(latestTitle.toUpperCase())}</text>` : ''}
+${renderTelemetryCards(state)}
+<rect x="24" y="248" width="492" height="34" rx="8" fill="#161b22" stroke="#30363d"/>
+<text x="270" y="270" font-size="12" fill="#c9d1d9" text-anchor="middle">“${message}”</text>
 </svg>
 `;
 }
 
 /** A row of every evolution stage, for the README. */
 export function renderEvolutionStrip(mood: Mood = 'happy'): string {
-  const cell = 120;
+  const cell = 110;
   const width = cell * STAGES.length;
   const cells = STAGES.map((stage, i) => {
     const accent = ACCENTS[stage.id];
     return (
-      `<g transform="translate(${i * cell + 20} 14)" shape-rendering="crispEdges">${pixelRects(buildSprite(stage.id, mood), 5)}</g>` +
-      `<text x="${i * cell + cell / 2}" y="112" font-size="10" font-weight="700" fill="${accent}" text-anchor="middle">${escapeXml(stage.title.toUpperCase())}</text>` +
+      `<g transform="translate(${i * cell + 15} 14)" shape-rendering="crispEdges">${pixelRects(buildSprite(stage.id, mood), 5)}</g>` +
+      `<text x="${i * cell + cell / 2}" y="112" font-size="9" font-weight="700" fill="${accent}" text-anchor="middle">${escapeXml(stage.title.toUpperCase())}</text>` +
       `<text x="${i * cell + cell / 2}" y="126" font-size="9" fill="#8b949e" text-anchor="middle">LV ${stage.minLevel}+</text>`
     );
   }).join('');
@@ -197,7 +251,7 @@ ${cells}
  * Perfect for minimal profile README embeds.
  */
 export function renderPetSpriteSvg(state: PetState): string {
-  const stage = stageForLevel(state.level);
+  const stage = stageForLevel(state.level, state.branch);
   const mood = moodOf(state.stats);
   const sprite = pixelRects(buildSprite(stage.id, mood), 10);
   const summary = `${state.name}, level ${state.level} ${stage.title}`;
@@ -219,7 +273,7 @@ export function renderPetSpriteSvg(state: PetState): string {
  * Renders a compact companion sticker with the animated pet and a minimal level pill below.
  */
 export function renderPetMiniSvg(state: PetState): string {
-  const stage = stageForLevel(state.level);
+  const stage = stageForLevel(state.level, state.branch);
   const mood = moodOf(state.stats);
   const accent = ACCENTS[stage.id];
   const sprite = pixelRects(buildSprite(stage.id, mood), 10);

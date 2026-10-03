@@ -110,12 +110,12 @@ describe('simulate: streaks and achievements', () => {
 });
 
 describe('simulate: inactivity', () => {
-  it('makes the pet hungrier, sadder and less healthy each idle day', () => {
+  it('makes the pet lose momentum, focus, and vitality each idle day', () => {
     const fed = run(newPet(), [ev('commit', '2026-03-01', 10)], '2026-03-01').state;
     const later = run(fed, [], '2026-03-05').state;
-    expect(later.stats.hunger).toBeGreaterThan(fed.stats.hunger);
-    expect(later.stats.happiness).toBeLessThan(fed.stats.happiness);
-    expect(later.stats.health).toBeLessThan(fed.stats.health);
+    expect(later.stats.momentum).toBeLessThan(fed.stats.momentum);
+    expect(later.stats.focus).toBeLessThan(fed.stats.focus);
+    expect(later.stats.vitality).toBeLessThan(fed.stats.vitality);
     expect(later.streak).toBe(0);
     expect(later.xp).toBe(fed.xp);
   });
@@ -136,9 +136,11 @@ describe('simulate: inactivity', () => {
   it('has the pet ask for you when idle', () => {
     const fed = run(newPet(), [ev('commit', '2026-03-01')], '2026-03-01').state;
     const idle = run(fed, [], '2026-03-04').state;
-    expect(['I miss you.', 'Just one commit? Please?', 'The repos are lonely.']).toContain(
-      chooseMessage(idle, '2026-03-04'),
-    );
+    expect([
+      'quiet week. still alive.',
+      'working tree clean.',
+      'no commits recently. standing by.',
+    ]).toContain(chooseMessage(idle, '2026-03-04'));
   });
 });
 
@@ -148,7 +150,7 @@ describe('first-time setup', () => {
     const events = [ev('commit', '2026-03-01', 5), ev('commit', '2026-03-02', 5)];
     const result = run(pet, events, '2026-03-10');
     expect(result.state.totals.commits).toBe(10);
-    expect(result.state.stats.hunger).toBeLessThan(40);
+    expect(result.state.stats.momentum).toBeGreaterThan(50);
   });
 
   it('can skip history entirely', () => {
@@ -170,7 +172,7 @@ describe('state validation', () => {
     expect(() => parsePetState(null)).toThrow(StateError);
     expect(() => parsePetState({ version: 99 })).toThrow(/version/);
     const bad = JSON.parse(serializePetState(createPet('Nova', '2026-03-01')));
-    bad.stats.health = 400;
-    expect(() => parsePetState(bad)).toThrow(/stats\.health/);
+    bad.stats.vitality = 400;
+    expect(() => parsePetState(bad)).toThrow(/stats\.vitality/);
   });
 });

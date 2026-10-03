@@ -125,15 +125,13 @@ function egg(w: number, h: number): string[] {
   return rows;
 }
 
-const mirror = (rows: string[]): string[] => rows.map((r) => [...r].reverse().join(''));
-
 const SPECS: Record<StageId, StageSpec> = {
   egg: {
     body: { w: 10, h: 12 },
-    palette: { O: OUTLINE, B: '#f6efe0', L: '#fffaf0', S: '#d8ccb2', G: '#7dd3a8' },
+    palette: { O: OUTLINE, B: '#f6efe0', L: '#fffaf0', S: '#d8ccb2', G: '#3fb950' },
     accessories: () => [],
   },
-  hatchling: {
+  sprout: {
     body: { w: 10, h: 8 },
     palette: { O: OUTLINE, B: '#5eead4', L: '#a7f3e6', S: '#2dbfa9', G: '#86efac' },
     accessories: (bx, by) => [
@@ -146,67 +144,104 @@ const SPECS: Record<StageId, StageSpec> = {
     ],
     face: { eyeY: 2, leftX: 2, rightX: 6, mouthX: 3, mouthY: 4 },
   },
-  developer: {
+  builder: {
     body: { w: 12, h: 10 },
-    palette: { O: OUTLINE, B: '#818cf8', L: '#b4bcff', S: '#5558e6', G: '#fbbf24' },
-    accessories: () => [],
+    palette: { O: OUTLINE, B: '#f59e0b', L: '#fde68a', S: '#b45309', G: '#fbbf24' },
+    accessories: (bx, by) => [
+      {
+        x: bx + 1,
+        y: by - 2,
+        rows: ['.YYYYYYYY.', 'YYYYYYYYYY'],
+        palette: { Y: '#fbbf24' },
+      },
+    ],
     face: { eyeY: 3, leftX: 3, rightX: 7, mouthX: 4, mouthY: 6 },
     glasses: true,
   },
-  code_beast: {
-    body: { w: 14, h: 12 },
-    palette: { O: OUTLINE, B: '#fb7185', L: '#fecdd3', S: '#d6254f', G: '#fde047' },
-    accessories: (bx, by, w) => [
-      { x: bx + 1, y: by - 3, rows: ['G..', 'GG.', 'GGG'], palette: { G: '#fde047' } },
-      {
-        x: bx + w - 4,
-        y: by - 3,
-        rows: mirror(['G..', 'GG.', 'GGG']),
-        palette: { G: '#fde047' },
-      },
-    ],
-    face: { eyeY: 4, leftX: 4, rightX: 8, mouthX: 5, mouthY: 7 },
-    fangs: true,
-  },
-  git_monster: {
-    body: { w: 12, h: 11 },
-    palette: { O: OUTLINE, B: '#a78bfa', L: '#ddd0ff', S: '#7138e0', G: '#f97316' },
+  architect: {
+    body: { w: 14, h: 11 },
+    palette: { O: OUTLINE, B: '#f59e0b', L: '#fef08a', S: '#b45309', G: '#60a5fa' },
     accessories: (bx, by, w): Layer[] => [
       {
         x: bx + 2,
         y: by - 4,
-        rows: ['W......W', 'G......G', '.G....G.', '..GGGG..'],
-        palette: { W: '#ffffff', G: '#f97316' },
+        rows: ['C...CC...C', '.C..CC..C.', '..CCCCCC..'],
+        palette: { C: '#60a5fa' },
       },
+      { x: 0, y: by + 2, rows: ['.C.', 'CCC', '.C.'], palette: { C: '#93c5fd' } },
+      { x: bx + w - 2, y: by + 2, rows: ['.C.', 'CCC', '.C.'], palette: { C: '#93c5fd' } },
+    ],
+    face: { eyeY: 3, leftX: 4, rightX: 8, mouthX: 5, mouthY: 6 },
+    glasses: true,
+  },
+  shipwright: {
+    body: { w: 12, h: 10 },
+    palette: { O: OUTLINE, B: '#38bdf8', L: '#bae6fd', S: '#0284c7', G: '#0369a1' },
+    accessories: (bx, by): Layer[] => [
       {
-        x: bx - 2,
-        y: by + 2,
-        rows: ['P.', 'PP', 'PP', 'PP', '.P'],
-        palette: { P: '#7138e0' },
+        x: bx + 2,
+        y: by - 3,
+        rows: ['..WWWW..', '.WWWWWW.', 'WWWWWWWW'],
+        palette: { W: '#ffffff' },
       },
-      {
-        x: bx + w,
-        y: by + 2,
-        rows: mirror(['P.', 'PP', 'PP', 'PP', '.P']),
-        palette: { P: '#7138e0' },
-      },
+      { x: bx + 4, y: by - 1, rows: ['BBBB'], palette: { B: '#0369a1' } },
     ],
     face: { eyeY: 3, leftX: 3, rightX: 7, mouthX: 4, mouthY: 6 },
   },
-  legend: {
-    body: { w: 14, h: 10 },
-    palette: { O: OUTLINE, B: '#fbbf24', L: '#fff1b0', S: '#d98306', G: '#ffffff' },
+  admiral: {
+    body: { w: 14, h: 11 },
+    palette: { O: OUTLINE, B: '#0284c7', L: '#7dd3fc', S: '#0369a1', G: '#facc15' },
+    accessories: (bx, by, w): Layer[] => [
+      {
+        x: bx + 3,
+        y: by - 4,
+        rows: ['..GG..', '.GGGG.', 'GGGGGG', 'GGGGGG'],
+        palette: { G: '#facc15' },
+      },
+      { x: 0, y: by + 1, rows: ['YY', 'YY'], palette: { Y: '#facc15' } },
+      { x: bx + w - 2, y: by + 1, rows: ['YY', 'YY'], palette: { Y: '#facc15' } },
+    ],
+    face: { eyeY: 3, leftX: 4, rightX: 8, mouthX: 5, mouthY: 6 },
+  },
+  hunter: {
+    body: { w: 12, h: 10 },
+    palette: { O: OUTLINE, B: '#a855f7', L: '#e9d5ff', S: '#7e22ce', G: '#4ade80' },
     accessories: (bx, by): Layer[] => [
+      {
+        x: bx + 2,
+        y: by - 3,
+        rows: ['P....P', 'PP..PP', '.PPPP.'],
+        palette: { P: '#6b21a8' },
+      },
+    ],
+    face: { eyeY: 3, leftX: 3, rightX: 7, mouthX: 4, mouthY: 6 },
+    fangs: true,
+  },
+  voidwalker: {
+    body: { w: 14, h: 11 },
+    palette: { O: OUTLINE, B: '#6366f1', L: '#c7d2fe', S: '#4338ca', G: '#c084fc' },
+    accessories: (bx, by, w): Layer[] => [
       {
         x: bx + 3,
         y: by - 3,
-        rows: ['Y..YY..Y', 'YYYYYYYY', 'YRYYYYRY'],
-        palette: { Y: '#facc15', R: '#ef4444' },
+        rows: ['N....N', 'NN..NN', '.NNNN.'],
+        palette: { N: '#c084fc' },
       },
-      { x: 0, y: 0, rows: ['.W.', 'WWW', '.W.'], palette: { W: '#ffffff' } },
-      { x: 13, y: 1, rows: ['.W.', 'WWW', '.W.'], palette: { W: '#fff1b0' } },
+      {
+        x: 0,
+        y: by + 1,
+        rows: ['V', 'V', 'V'],
+        palette: { V: '#818cf8' },
+      },
+      {
+        x: bx + w - 1,
+        y: by + 1,
+        rows: ['V', 'V', 'V'],
+        palette: { V: '#818cf8' },
+      },
     ],
     face: { eyeY: 3, leftX: 4, rightX: 8, mouthX: 5, mouthY: 6 },
+    fangs: true,
   },
 };
 

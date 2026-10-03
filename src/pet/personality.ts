@@ -1,4 +1,3 @@
-import { addDays } from '../dates.js';
 import { daysSinceActive, isActiveDay } from './mechanics.js';
 import type { PetState } from './types.js';
 
@@ -13,42 +12,59 @@ function pick(lines: readonly string[], seed: string): string {
   return lines[hash(seed) % lines.length];
 }
 
-function sumLastDays(state: PetState, today: string, days: number) {
-  const total = { commits: 0, prs: 0, issues: 0 };
-  for (let i = 0; i < days; i++) {
-    const day = state.dailyLog[addDays(today, -i)];
-    if (!day) continue;
-    total.commits += day.commits;
-    total.prs += day.prsOpened + day.prsMerged;
-    total.issues += day.issuesOpened;
-  }
-  return total;
-}
-
 export function chooseMessage(state: PetState, today: string): string {
   const seed = `${state.name}:${today}`;
   const idleDays = daysSinceActive(state.dailyLog, today);
-  const week = sumLastDays(state, today, 7);
-  const commitsToday = state.dailyLog[today]?.commits ?? 0;
+  const todayEntry = state.dailyLog[today];
+  const commitsToday = todayEntry?.commits ?? 0;
+  const nightCommitsToday = todayEntry?.nightCommits ?? 0;
+  const prsToday = (todayEntry?.prsOpened ?? 0) + (todayEntry?.prsMerged ?? 0);
+  const issuesClosedToday = todayEntry?.issuesClosed ?? 0;
 
   if (idleDays === undefined) {
-    return pick(['Make a commit to wake me up.', 'Feed me code?', 'Hello world?'], seed);
+    return pick(['working tree clean.', 'git init complete.', 'awaiting first push.'], seed);
   }
-  if (idleDays >= 7) {
-    return pick(['Is this thing on?', 'Remember me?', 'It has been so quiet...'], seed);
-  }
+
   if (idleDays >= 2) {
-    return pick(['I miss you.', 'Just one commit? Please?', 'The repos are lonely.'], seed);
+    return pick(
+      ['quiet week. still alive.', 'working tree clean.', 'no commits recently. standing by.'],
+      seed,
+    );
   }
-  if (week.prs >= 10) return pick(['PR machine detected.', 'So many pull requests.'], seed);
-  if (week.issues >= 8)
-    return pick(['We need to talk about your bugs.', 'Issue tracker: full.'], seed);
-  if (commitsToday >= 10) return pick(["You haven't stopped coding.", 'Touch grass? Later.'], seed);
-  if (state.streak >= 14) return pick(["We're cooking.", 'The streak is sacred.'], seed);
-  if (state.streak >= 3) return pick(["We're cooking.", 'Keep it going.', 'Streak mode on.'], seed);
-  if (state.stats.hunger >= 70) return pick(['Feed me commits.', 'My tummy says merge.'], seed);
+
+  if (nightCommitsToday > 0) {
+    return pick(['push detected late.', 'compiling in the dark.', 'midnight commit landed.'], seed);
+  }
+
+  if (prsToday > 0) {
+    return pick(['PR merged.', 'merged into main.', 'clean merge.'], seed);
+  }
+
+  if (issuesClosedToday > 0) {
+    return pick(['issue closed.', 'bug squashed.', 'clean fix landed.'], seed);
+  }
+
+  if (commitsToday >= 8) {
+    return pick(['busy day in the repo.', 'commit log moving fast.', 'clean diff.'], seed);
+  }
+
+  if (state.streak >= 7) {
+    return pick(
+      ['main survived another week.', 'streak continuing.', 'clean commit log this week.'],
+      seed,
+    );
+  }
+
+  if (state.streak >= 3) {
+    return pick(['steady cadence.', 'clean rhythm.', 'branch active.'], seed);
+  }
+
   if (isActiveDay(state.dailyLog[today])) {
-    return pick(['Still coding. Respect.', 'Nice. Do that again.', 'Tasty commits.'], seed);
+    return pick(
+      ['working tree clean.', 'pushed to branch.', 'main survived another commit.'],
+      seed,
+    );
   }
-  return pick(['Ready when you are.', 'Waiting for your next push.', 'Hi. Ship something?'], seed);
+
+  return pick(['working tree clean.', 'standing by.', 'ready when you are.'], seed);
 }

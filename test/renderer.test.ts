@@ -41,7 +41,8 @@ describe('renderPetSvg', () => {
     expect(svg.startsWith('<svg')).toBe(true);
     expect(svg).toContain('NOVA');
     expect(svg).toContain('LV 07');
-    expect(svg).toContain('9 DAY STREAK');
+    expect(svg).toContain('COMMITS');
+    expect(svg).toContain('9d');
     expect(svg).toContain('@octocat');
     expect(svg).not.toContain('<script');
     expect(svg).not.toMatch(/https?:\/\/(?!www\.w3\.org)/);
@@ -61,7 +62,7 @@ describe('renderPetSvg', () => {
   });
 
   it('renders the evolution strip', () => {
-    expect(renderEvolutionStrip()).toContain('GITHUB LEGEND');
+    expect(renderEvolutionStrip()).toContain('GRAND ARCHITECT');
   });
 
   it('renders pure sprite SVG without dashboard chrome', () => {
@@ -69,7 +70,7 @@ describe('renderPetSvg', () => {
     const svg = renderPetSpriteSvg(state);
     expect(svg.startsWith('<svg')).toBe(true);
     expect(svg).toContain('width="160"');
-    expect(svg).not.toContain('HEALTH');
+    expect(svg).not.toContain('VITALITY');
     expect(svg).not.toContain('XP');
   });
 
@@ -78,6 +79,6 @@ describe('renderPetSvg', () => {
     const svg = renderPetMiniSvg(state);
     expect(svg.startsWith('<svg')).toBe(true);
     expect(svg).toContain('LV 02');
-    expect(svg).not.toContain('HEALTH');
+    expect(svg).not.toContain('VITALITY');
   });
 });
