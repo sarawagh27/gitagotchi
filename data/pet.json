@@ -2,13 +2,14 @@
   "version": 1,
   "name": "Nova",
   "species": "blob",
+  "branch": "builder",
   "xp": 0,
   "level": 1,
   "stats": {
-    "health": 47,
-    "energy": 52,
-    "hunger": 58,
-    "happiness": 49
+    "vitality": 47,
+    "momentum": 42,
+    "sync": 49,
+    "focus": 52
   },
   "streak": 0,
   "longestStreak": 0,
