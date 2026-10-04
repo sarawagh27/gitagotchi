@@ -6,10 +6,10 @@
   "xp": 0,
   "level": 1,
   "stats": {
-    "vitality": 36,
-    "momentum": 28,
-    "sync": 39,
-    "focus": 40
+    "vitality": 23,
+    "momentum": 14,
+    "sync": 29,
+    "focus": 28
   },
   "streak": 0,
   "longestStreak": 0,
@@ -23,7 +23,7 @@
     "nightCommits": 0
   },
   "achievements": [],
-  "lastTickDay": "2026-10-04",
+  "lastTickDay": "2026-10-05",
   "dailyLog": {},
   "seenEventIds": []
 }
