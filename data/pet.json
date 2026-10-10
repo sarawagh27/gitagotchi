@@ -6,10 +6,10 @@
   "xp": 75,
   "level": 2,
   "stats": {
-    "vitality": 12,
-    "momentum": 15,
-    "sync": 13,
-    "focus": 8
+    "vitality": 8,
+    "momentum": 9,
+    "sync": 9,
+    "focus": 6
   },
   "streak": 1,
   "longestStreak": 1,
@@ -28,7 +28,7 @@
       "unlockedOn": "2026-10-10"
     }
   ],
-  "lastTickDay": "2026-10-10",
+  "lastTickDay": "2026-10-11",
   "dailyLog": {
     "2026-10-10": {
       "commits": 0,
