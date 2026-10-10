@@ -3,27 +3,46 @@
   "name": "Nova",
   "species": "blob",
   "branch": "builder",
-  "xp": 0,
-  "level": 1,
+  "xp": 75,
+  "level": 2,
   "stats": {
-    "vitality": 0,
-    "momentum": 0,
-    "sync": 0,
-    "focus": 0
+    "vitality": 12,
+    "momentum": 15,
+    "sync": 13,
+    "focus": 8
   },
-  "streak": 0,
-  "longestStreak": 0,
+  "streak": 1,
+  "longestStreak": 1,
   "totals": {
     "commits": 0,
-    "prsOpened": 0,
+    "prsOpened": 2,
     "prsMerged": 0,
     "issuesOpened": 0,
     "issuesClosed": 0,
     "reposCreated": 0,
     "nightCommits": 0
   },
-  "achievements": [],
+  "achievements": [
+    {
+      "id": "FIRST_PR",
+      "unlockedOn": "2026-10-10"
+    }
+  ],
   "lastTickDay": "2026-10-10",
-  "dailyLog": {},
-  "seenEventIds": []
+  "dailyLog": {
+    "2026-10-10": {
+      "commits": 0,
+      "prsOpened": 2,
+      "prsMerged": 0,
+      "issuesOpened": 0,
+      "issuesClosed": 0,
+      "reposCreated": 0,
+      "nightCommits": 0,
+      "streakAwarded": true
+    }
+  },
+  "seenEventIds": [
+    "16899917019",
+    "16905489494"
+  ]
 }
